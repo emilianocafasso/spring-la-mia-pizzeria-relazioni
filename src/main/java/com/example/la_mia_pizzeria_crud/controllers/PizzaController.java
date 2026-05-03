@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.la_mia_pizzeria_crud.model.Pizza;
 import com.example.la_mia_pizzeria_crud.repository.PizzaRepository;
 
-import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
 
 @Controller

@@ -24,6 +24,34 @@
             </div>
         </div>
 
+        <!-- Sezione offerte speciali -->
+        <div class="mt-4">
+            <h3>Offerte speciali</h3>
+            <!-- button -->
+            <a th:href="@{/specialoffers/create/{id}(id=${pizza.id})}" class="btn btn-success btn-sm mb-3">Crea una
+                nuova offerta</a>
+        </div>
+        <!-- Lista offerte esistenti -->
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                th:each="offer : ${pizza.offers}">
+
+                <div>
+                    <strong th:text="${offer.title}"></strong>
+                    <span th:text="${' - Dal ' + offer.startDate}"></span>
+                    <span th:if="${offer.endDate != null}" th:text="${' al ' + offer.endDate}"></span>
+                </div>
+
+                <div class="justify-content-between">
+                    <!-- bottone modifica -->
+                    <a th:href="@{/specialoffers/edit/{id}(id=${offer.id})}" class="btn btn-warning btn-sm">Modifica</a>
+                    <!-- bottone elimina -->
+                    <a th:href="@{/specialoffers/delete/{id}(id=${offer.id})}" class="btn btn-danger btn-sm">Elimina</a>
+                </div>
+
+            </li>
+        </ul>
+
     </div>
 </body>
 
