@@ -61,6 +61,16 @@
                                 </div>
                             </div>
 
+                            <div th:unless="${allIngredients.size == 0}" class="my-3 alert alert-warning">
+                                <label class="form-label fw-bold">Aggiungi Ingredienti</label>
+                                <div th:each="ingredient : ${allIngredients}" class="form-check">
+                                    <input type="checkbox" class="form-check-input" th:value="${ingredient.id}"
+                                        name="ingredients"
+                                        th:checked="${pizza.ingredients != null && pizza.ingredients.contains(ingredient)}">
+                                    <label class="form-check-label" th:text="${ingredient.name}"></label>
+                                </div>
+                            </div>
+
                             <div class="mb-3 d-flex justify-content-between">
                                 <input type="submit" class="btn btn-primary" value="Update Pizza">
                                 <input type="reset" class="btn btn-warning" value="Reset all fields">

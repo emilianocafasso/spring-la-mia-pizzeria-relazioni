@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.la_mia_pizzeria_crud.model.Ingredient;
 import com.example.la_mia_pizzeria_crud.model.Pizza;
+import com.example.la_mia_pizzeria_crud.repository.IngredientsRepository;
 import com.example.la_mia_pizzeria_crud.repository.PizzaRepository;
 
 import jakarta.validation.Valid;
@@ -24,6 +27,9 @@ public class PizzaController {
 
     @Autowired // spring initetta in automatico il repository
     private PizzaRepository pizzaRepository;
+
+    @Autowired
+    private IngredientsRepository ingredientsRepository;
 
     @GetMapping
     public String index(Model model) {
@@ -57,36 +63,52 @@ public class PizzaController {
     public String create(Model model) {
 
         model.addAttribute("pizza", new Pizza());
+        model.addAttribute("allIngredients", ingredientsRepository.findAll());
         return "pizzas/create";
     }
 
     @PostMapping("/create")
-    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model) {
+    public String store(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult,
+            @RequestParam(value = "ingredients", required = false) List<Integer> ingredientIds, Model model) {
         // 1. controllo errori di validazione
         if (bindingResult.hasErrors()) {
             // se ci sono, ritorna la view del form senza salvare
+            model.addAttribute("allIngredients", ingredientsRepository.findAll());
             return "pizzas/create";
-        } else {
-            // se non ci sono errrori salvo e reindirizzo
-            pizzaRepository.save(formPizza);
-            return "redirect:/pizzas";
         }
+
+        if (ingredientIds != null) {
+            List<Ingredient> ingredients = ingredientsRepository.findAllById(ingredientIds);
+            formPizza.setIngredients(ingredients);
+        }
+        // se non ci sono errrori salvo e reindirizzo
+        pizzaRepository.save(formPizza);
+        return "redirect:/pizzas";
+
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         model.addAttribute("pizza", pizzaRepository.findById(id).get());
+        model.addAttribute("allIngredients", ingredientsRepository.findAll());
         return "pizzas/edit";
     }
 
     @PostMapping("/edit/{id}")
-    public String upadate(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult, Model model) {
+    public String upadate(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult,
+            @RequestParam(value = "ingredients", required = false) List<Integer> ingredientIds, Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("allIngredients", ingredientsRepository.findAll());
             return "pizzas/edit";
-        } else {
-            pizzaRepository.save(formPizza);
-            return "redirect:/pizzas";
         }
+
+        if (ingredientIds != null) {
+            List<Ingredient> ingredients = ingredientsRepository.findAllById(ingredientIds);
+            formPizza.setIngredients(ingredients);
+        }
+
+        pizzaRepository.save(formPizza);
+        return "redirect:/pizzas";
     }
 
     @PostMapping("/delete/{id}")

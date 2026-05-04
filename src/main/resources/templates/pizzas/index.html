@@ -42,7 +42,14 @@
                             style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
                     </td>
                     <td th:text="*{name}"></td>
-                    <td th:text="*{description}"></td>
+                    <td>
+                        <div>
+                            <span th:each="ingredient, iter : ${pizza.ingredients}">
+                                <span th:text="${ingredient.name}"></span>
+                                <span th:if="${!iter.last}">, </span>
+                            </span>
+                        </div>
+                    </td>
                     <td th:text="${'€ ' + pizza.price}"></td>
                     <td>
                         <!-- @{...} costruisce url dinamici in Thymeleaf -->
